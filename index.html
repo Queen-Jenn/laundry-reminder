@@ -21,25 +21,37 @@
     <script>
         async function startTimer(minutes) {
 
-            if (Notification.permission !== "granted") {
-                await Notification.requestPermission();
-            }
+    let status = document.getElementById("status");
 
-            document.getElementById("status").innerText =
-                `Reminder set for ${minutes} minutes`;
+    status.innerText = "Button clicked";
 
-            setTimeout(() => {
+    try {
 
-                new Notification("Laundry Reminder", {
-                    body: "Your laundry should be ready."
-                });
-
-            }, minutes * 60 * 1000);
+        if (!("Notification" in window)) {
+            status.innerText = "Notifications not supported";
+            return;
         }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
+        status.innerText = "Notifications supported";
+
+        let permission = Notification.permission;
+
+        status.innerText = "Permission: " + permission;
+
+        if (permission !== "granted") {
+            permission = await Notification.requestPermission();
+            status.innerText = "Permission result: " + permission;
         }
+
+        status.innerText = `Reminder set for ${minutes} minutes`;
+
+    } catch (error) {
+
+        status.innerText = "Error: " + error.message;
+        console.error(error);
+
+    }
+}
     </script>
 </body>
 </html>
