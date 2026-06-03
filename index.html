@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laundry Reminder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <h1>Laundry Reminder</h1>
+
+    <button onclick="startTimer(60)">
+        Washer (60 min)
+    </button>
+
+    <button onclick="startTimer(45)">
+        Dryer (45 min)
+    </button>
+
+    <p id="status"></p>
+
+    <script>
+        async function startTimer(minutes) {
+
+            if (Notification.permission !== "granted") {
+                await Notification.requestPermission();
+            }
+
+            document.getElementById("status").innerText =
+                `Reminder set for ${minutes} minutes`;
+
+            setTimeout(() => {
+
+                new Notification("Laundry Reminder", {
+                    body: "Your laundry should be ready."
+                });
+
+            }, minutes * 60 * 1000);
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</body>
+</html>
